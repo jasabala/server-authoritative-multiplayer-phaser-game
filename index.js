@@ -8,7 +8,7 @@ const Datauri = require('datauri');
 
 const datauri = new Datauri();
 const { JSDOM } = jsdom;
-const port = process.env.PORT || 8080
+const port = process.env.PORT || 8080;
 
 app.use(express.static(__dirname + '/public'));
 
@@ -19,27 +19,32 @@ app.get('/', function (req, res) {
 function setupAuthoritativePhaser() {
   JSDOM.fromFile(path.join(__dirname, 'authoritative_server/index.html'), {
     // To run the scripts in the html file
-    runScripts: "dangerously",
+    runScripts: 'dangerously',
     // Also load supported external resources
-    resources: "usable",
+    resources: 'usable',
     // So requestAnimatinFrame events fire
     pretendToBeVisual: true
-  }).then((dom) => {
-    dom.window.URL.createObjectURL = (blob) => {
-      if (blob){
-        return datauri.format(blob.type, blob[Object.getOwnPropertySymbols(blob)[0]]._buffer).content;
-      }
-    };
-    dom.window.URL.revokeObjectURL = (objectURL) => {};
-    dom.window.gameLoaded = () => {
-      server.listen(port, function () {
-        console.log(`Listening on http://localhost:${port}`);
-      });
-    };
-    dom.window.io = io;
-  }).catch((error) => {
-    console.log(error.message);
-  });
+  })
+    .then((dom) => {
+      dom.window.URL.createObjectURL = (blob) => {
+        if (blob) {
+          return datauri.format(
+            blob.type,
+            blob[Object.getOwnPropertySymbols(blob)[0]]._buffer
+          ).content;
+        }
+      };
+      dom.window.URL.revokeObjectURL = (objectURL) => {};
+      dom.window.gameLoaded = () => {
+        server.listen(port, function () {
+          console.log(`Listening on http://localhost:${port}`);
+        });
+      };
+      dom.window.io = io;
+    })
+    .catch((error) => {
+      console.log(error.message);
+    });
 }
 
 setupAuthoritativePhaser();
