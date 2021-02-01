@@ -27,6 +27,15 @@ let spacer = 2000/5
         this.add.image(spacer*i,spacer*o,"ball").setScale(.25)
     }
   }
+spacer = 2000/20
+  for(let o = 0; o < 20; o++){
+        this.add.line( 1000,o*spacer,0, o*spacer, 2000,o*spacer, 0x774444)
+         this.add.line( o*spacer,1000, o*spacer, 0, o*spacer, 2000, 0x554444)
+    }
+
+
+
+
 
   console.log("created")
  var self = this;
@@ -65,9 +74,7 @@ let spacer = 2000/5
   this.leftKeyPressed = false;
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
-    this.downKeyPressed = false;
-
-
+  this.downKeyPressed = false;
 }
 
 function update() {
