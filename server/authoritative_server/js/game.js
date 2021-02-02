@@ -30,24 +30,28 @@ function create() {
   this.matter.world.setBounds(0, 0, 2000, 2000);
 
   const self = this;
-  let spacer = 2000 / 5;
-  for (let o = 1; o < 5; o++) {
-    for (let i = 1; i < 5; i++) {
-      let c = this.matter.add
-        .sprite(spacer * i, spacer * o, 'ball')
-        .setScale(0.25);
-      c.setCircle((c.width / 2) * 0.25)
-        .setInteractive(true)
-        .setStatic(true)
-        .setBounce(1);
+
+let spacer = 2000/5
+  for(let o = 1; o < 5; o++){
+    for(let i = 1; i < 5; i++){
+        this.add.image(spacer*i,spacer*o,"ball").setScale(.25)
     }
   }
-  let c = this.matter.add.sprite(100, 100, 'ball');
-  c.setCircle(c.width / 2)
-    .setInteractive(true)
-    .setStatic(true)
-    .setBounce(1);
 
+
+  
+spacer = 2000/5
+  for(let o = 1; o < 5; o++){
+    for(let i = 1; i < 5; i++){
+      let c = this.matter.add.sprite(spacer * i, spacer * o, 'ball')
+        c.setScale(0.25);
+        c.setCircle((c.width / 2) * 0.25)
+        c.setInteractive(true)
+        c.setStatic(true)
+        c.setBounce(.5);
+    }
+  }
+ 
   io.on('connection', function (socket) {
     console.log('a user connected');
     // create a new player and add it to our players object
@@ -94,14 +98,14 @@ function update() {
       const input = ship.input;
 
       if (input.left) {
-        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, -0.03);
+        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, -0.04);
       } else if (input.right) {
-        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, 0.03);
+        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, 0.04);
       }
       if (input.up) {
-        ship.thrust(0.0075);
+        ship.thrust(1/1000);
       } else if (input.down) {
-        ship.thrust(-0.005);
+        ship.thrust(-1/1500);
       }
     }
 
@@ -123,7 +127,9 @@ function addPlayer(self, playerInfo) {
     100 + randomPosition(800),
     100 + randomPosition(800),
     'ship'
-  );
+  )
+  ship.setScale(.5)
+  ship.setOrigin(.5);
   ship.playerId = playerInfo.playerId;
   ship.setFriction(0.05, 0.025, 0.065);
   ship.setInteractive(true);

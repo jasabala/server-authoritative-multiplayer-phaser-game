@@ -21,23 +21,25 @@ function preload() {
 function create() {
 
 
+
 let spacer = 2000/5
   for(let o = 1; o < 5; o++){
     for(let i = 1; i < 5; i++){
         this.add.image(spacer*i,spacer*o,"ball").setScale(.25)
+   
     }
   }
-spacer = 2000/20
-  for(let o = 0; o < 20; o++){
+
+
+
+spacer = 2000/10
+  for(let o = 0; o < 10; o++){
         this.add.line( 1000,o*spacer,0, o*spacer, 2000,o*spacer, 0x774444)
          this.add.line( o*spacer,1000, o*spacer, 0, o*spacer, 2000, 0x554444)
     }
 
 
 
-
-
-  console.log("created")
  var self = this;
   this.socket = io();
 
@@ -53,7 +55,7 @@ spacer = 2000/20
   })
 
   this.socket.on('remove', (playerId)=>{
-    let pl = players.filter(p=>p.playerId==playerId)
+    let pl = ships.filter(p=>p.playerId==playerId)
     if(pl && pl[0]){
       players.splice(players.indexOf(pl[0], 1))
       pl[0].destroy()
@@ -101,7 +103,7 @@ function update() {
     this.downKeyPressed = false;
   }
 
-  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed || up !== this.downKeyPressed) {
+  if (left !== this.leftKeyPressed || right !== this.rightKeyPressed || up !== this.upKeyPressed || down !== this.downKeyPressed) {
     this.socket.emit('playerInput', { left: this.leftKeyPressed , right: this.rightKeyPressed, up: this.upKeyPressed, down: this.downKeyPressed });
   }
 }
@@ -109,6 +111,8 @@ function update() {
 function displayPlayers(self, playerInfo) {
   console.log("adding"+playerInfo.playerId)
   const player = self.add.image(playerInfo.x, playerInfo.y, "ship")
+  player.setScale(.5)
+  player.setOrigin(.5, .5)
   player.playerId = playerInfo.playerId;
   if(playerInfo.playerId === self.socket.id){
     self.cameras.main.startFollow(player)
