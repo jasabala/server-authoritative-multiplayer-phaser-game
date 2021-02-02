@@ -64,9 +64,9 @@ spacer = 2000/10
 
   this.socket.on('playerUpdates', function (players) {
     Object.keys(players).forEach(function (id) {
-      let sh = ships.filter(s => players[id].playerId === s.playerId)
+      let sh = ships.filter(s => id == s.playerId)
       if (sh && sh[0]) {
-          sh[0].setRotation(players[id].rotation);
+          sh[0].setRotation(players[id].r);
           sh[0].setPosition(players[id].x, players[id].y);
       }
     })

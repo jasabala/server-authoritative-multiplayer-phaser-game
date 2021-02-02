@@ -93,27 +93,35 @@ spacer = 2000/5
 }
 
 function update() {
+  
+  let playerUpdates = {}
   ships.forEach((ship) => {
     if (ship.input) {
       const input = ship.input;
 
       if (input.left) {
-        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, -0.04);
+        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, -0.035);
       } else if (input.right) {
-        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, 0.04);
+        Phaser.Physics.Matter.Matter.Body.setAngularVelocity(ship.body, 0.035);
       }
       if (input.up) {
-        ship.thrust(1/1000);
+        ship.thrust(1/2500);
       } else if (input.down) {
-        ship.thrust(-1/1500);
+        ship.thrust(-1/3000);
       }
     }
-
+    
     players[ship.playerId].x = ship.x;
     players[ship.playerId].y = ship.y;
     players[ship.playerId].rotation = ship.rotation;
+    playerUpdates[ship.playerId]={
+      x: Math.round(ship.x),
+      y: Math.round(ship.y),
+      r: Math.round(ship.rotation*100)/100
+    }
   });
-  io.emit('playerUpdates', players);
+  console.log(playerUpdates)
+  io.emit('playerUpdates', playerUpdates);
 }
 
 function handlePlayerInput(self, playerId, input) {
