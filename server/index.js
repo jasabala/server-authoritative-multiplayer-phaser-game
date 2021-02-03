@@ -11,7 +11,6 @@ const { JSDOM } = jsdom;
 const port = process.env.PORT || 8080;
 
 app.use(express.static(__dirname + '/public'));
-
 app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
@@ -26,7 +25,7 @@ function setupAuthoritativePhaser() {
     pretendToBeVisual: true
   })
     .then((dom) => {
-      dom.window.URL.createObjectURL = (blob) => {
+      dom.window.URL.createObjectURL = function (blob) {
         if (blob) {
           return datauri.format(
             blob.type,
