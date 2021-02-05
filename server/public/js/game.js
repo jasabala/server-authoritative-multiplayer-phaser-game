@@ -1,8 +1,6 @@
 var config = {
   type: Phaser.WEBGL,
   parent: 'phaser-game',
-  width: 800,
-  height: 600,
   scene: {
     preload: preload,
     create: create,
@@ -13,6 +11,7 @@ var config = {
 var game = new Phaser.Game(config);
 const ships = [];
 const tiles = [];
+let divisions = 8;
 
 function preload() {
   this.load.image('tile', 'assets/tile.png');
@@ -23,13 +22,14 @@ function preload() {
 function create() {
   let graphics = this.add.graphics();
 
-  let divisions = 8;
+  
   let spacer = 2000 / divisions;
   for (let o = 1; o < divisions + 1; o++) {
     for (let i = 1; i < divisions + 1; i++) {
-      let color1 = 0x111111;
-      let color2 = 0x333333;
+      let color1 = 0x888888;
+      let color2 = 0x999999;
       let t = this.add.image(spacer * i, spacer * o, 'tile').setTint(color1);
+      
       if ((i + o) % 2 === 0) t.setTint(color2);
       t.setScale(spacer / t.width);
       t.setOrigin(1, 1);
@@ -55,7 +55,6 @@ function create() {
   this.socket = io();
 
   this.socket.on('currentPlayers', (playerData) => {
-    console.log(Object.keys(playerData) + ' deteced');
     Object.keys(playerData).forEach((id) => {
       displayPlayers(self, playerData[id]);
     });
@@ -84,7 +83,11 @@ function create() {
   });
 
   this.socket.on('colortile', (data) => {
-    tiles[data.tile].setTint(data.color);
+    data.forEach( dat =>{
+      tiles[dat.square].setTint(dat.color);
+      tiles[dat.square].setAlpha(.9);
+    })
+    
   });
 
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -92,6 +95,10 @@ function create() {
   this.rightKeyPressed = false;
   this.upKeyPressed = false;
   this.downKeyPressed = false;
+  this.wKey = this.input.keyboard.addKey('W', true, false)
+  this.sKey = this.input.keyboard.addKey('S', true, false)
+  this.aKey = this.input.keyboard.addKey('A', true, false)
+  this.dKey = this.input.keyboard.addKey('D', true, false)
 }
 
 function update() {
@@ -100,24 +107,10 @@ function update() {
   const up = this.upKeyPressed;
   const down = this.downKeyPressed;
 
-  if (this.cursors.left.isDown) {
-    this.leftKeyPressed = true;
-  } else if (this.cursors.right.isDown) {
-    this.rightKeyPressed = true;
-  } else {
-    this.leftKeyPressed = false;
-    this.rightKeyPressed = false;
-  }
-
-  if (this.cursors.up.isDown) {
-    this.upKeyPressed = true;
-  } else if (this.cursors.down.isDown) {
-    this.downKeyPressed = true;
-  } else {
-    this.upKeyPressed = false;
-    this.downKeyPressed = false;
-  }
-
+  this.leftKeyPressed =  this.cursors.left.isDown|| this.aKey.isDown 
+  this.rightKeyPressed = this.cursors.right.isDown|| this.dKey.isDown
+  this.upKeyPressed =this.cursors.up.isDown || this.wKey.isDown
+  this.downKeyPressed = this.cursors.down.isDown|| this.sKey.isDown
   if (
     left !== this.leftKeyPressed ||
     right !== this.rightKeyPressed ||
@@ -134,7 +127,6 @@ function update() {
 }
 
 function displayPlayers(self, playerInfo) {
-  console.log('adding' + playerInfo.playerId);
   const player = self.add.image(playerInfo.x, playerInfo.y, 'ship');
   player.setScale(0.5);
   player.setOrigin(0.5, 0.5);
