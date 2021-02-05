@@ -6,7 +6,7 @@ const config = {
   physics: {
     default: 'matter',
     matter: {
-      debug: false,
+      debug: true,
       gravity: { y: 0 }
     }
   },
@@ -66,13 +66,16 @@ function update() {
         ship.thrust(-1 / 3000);
       }
     }
-
     players[ship.playerId].x = ship.x;
     players[ship.playerId].y = ship.y;
+    players[ship.playerId].vx = ship.vx;
+    players[ship.playerId].vy = ship.vy;
     players[ship.playerId].rotation = ship.rotation;
     playerUpdates[ship.playerId] = {
       x: Math.round(ship.x),
       y: Math.round(ship.y),
+      vx: Math.round(ship.vx*1000)/1000,
+      vy: Math.round(ship.vy*1000)/1000,
       r: Math.round(ship.rotation * 100) / 100
     };    
   });

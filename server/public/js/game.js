@@ -1,6 +1,13 @@
 var config = {
   type: Phaser.WEBGL,
   parent: 'phaser-game',
+  physics: {
+    default: 'matter',
+    matter: {
+      debug: true,
+      gravity: { y: 0 }
+    }
+  },
   scene: {
     preload: preload,
     create: create,
@@ -78,6 +85,7 @@ function create() {
       if (sh && sh[0]) {
         sh[0].setRotation(players[id].r);
         sh[0].setPosition(players[id].x, players[id].y);
+        sh[0].setVelocityX(players[id].vx)
       }
     });
   });
@@ -127,13 +135,23 @@ function update() {
 }
 
 function displayPlayers(self, playerInfo) {
-  const player = self.add.image(playerInfo.x, playerInfo.y, 'ship');
-  player.setScale(0.5);
-  player.setOrigin(0.5, 0.5);
-  player.playerId = playerInfo.playerId;
+   let ship = self.matter.add.sprite(
+    playerInfo.x,
+    playerInfo.y,
+    'ship'
+  );
+  ships.push(ship);
+  ship.body.onWorldBounds = true;
+  ship.setScale(0.5);
+  ship.setOrigin(0.5);
+  ship.playerId = playerInfo.playerId;
+  ship.setFriction(0.05, 0.025, 0.065);
+  ship.setBounce(0.9);
+  ship.playerId = playerInfo.playerId;
   if (playerInfo.playerId === self.socket.id) {
-    self.cameras.main.startFollow(player);
+    self.cameras.main.startFollow(ship);
   }
-  player.setTint(playerInfo.tint);
-  ships.push(player);
+  ship.setTint(playerInfo.tint);
+  
+  
 }
